@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+  </head>
+  <body>	
+	<h1></h1>
+	<p></p>  
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技感用户系统</title>
+    <style>
+        /* 全局像素字体（MC风格） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            min-height: 100vh;
+显示：柔性；
+            flex-direction: column;
+对齐-内容：居中；
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 主页面LOGO（左上角） */
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #3b82f6;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
+            z-index: 10;
+        }
+
+        /* 公共星光样式 */
+        .star-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+指针事件：无；
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 1s infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: var(--random-opacity); transform: scale(var(--random-scale)); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+
+        /* 主页面装饰 */
+        .main-decor {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .decor-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent 70%);
+            filter: blur(40px);
+        }
+
+        .decor-circle1 {
+            width: 400px;
+            height: 400px;
+            top: 10%;
+            left: 10%;
+        }
+
+        .decor-circle2 {
+            width: 350px;
+            height: 350px;
+            bottom: 10%;
+            right: 10%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
+        }
+
+        .decor-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .decor-line {
+            position: absolute;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            height: 1px;
+            filter: blur(1px);
+            opacity: 0.3;
+        }
+
+        .line1 {
+            width: 80%;
+            top: 30%;
+            left: 10%;
+        }
+
+        .line2 {
+            width: 60%;
+            top: 70%;
+            left: 20%;
+        }
+
+        /* 页面切换星光 */
+        .switch-stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 101;
+            pointer-events: none;
+        }
+
+        .switch-star {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            opacity: 0;
+            animation: switchFlash 0.8s ease-in-out forwards;
+        }
+
+        @keyframes switchFlash {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* 核心按钮样式 */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            z-index: 1;
+            margin-top: 40px;
+        }
+
+        .card {
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 0 30px;
+            height: 60px;
+            width: 220px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(59, 130, 246, 0.1),
+                rgba(139, 92, 246, 0.2),
+                rgba(34, 197, 94, 0.1)
+            );
+            transform: translateX(-100%);
+            animation: flow 6s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .card1 {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.4));
+        }
+
+        .card2 {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.4));
+        }
+
+        .card3 {
+            background: linear-gradient(135deg, #ffd700, #ff9500, #ff4500, #ff00ff, #9900ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        .card2:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+
+        .card3:hover {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+            border-color: rgba(255, 215, 0, 0.8);
+        }
+
+        /* 页面容器 */
+        .page-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            padding: 30px;
+            color: white;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            overflow-y: auto;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* 通用组件样式 */
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #3b82f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 102;
+        }
+
+        .back-btn:hover {
+            background: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+            transform: scale(1.1);
+        }
+
+        .back-to-main-btn {
+            display: block;
+            width: 180px;
+            height: 45px;
+            margin: 40px auto 60px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            line-height: 45px;
+            text-decoration: none;
+        }
+
+        .back-to-main-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #cbd5e1;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+
+        .form-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #22c55e);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+        }
+
+        .form-link {
+            color: #3b82f6;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .form-link:hover {
+            color: #8b5cf6;
+            text-decoration: underline;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .success-hint {
+            color: #22c55e;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* 用户后台样式 */
+        .backend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .backend-title {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+
+        .backend-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .backend-sidebar {
+            width: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #cbd5e1;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(139, 92, 246, 0.1);
+            color: white;
+            border-left: 3px solid #8b5cf6;
+            padding-left: 12px;
+        }
+
+        .backend-main {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .main-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        /* 控制台样式 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        .data-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-value {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .data-desc {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .card-list {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 18px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .card-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-item:last-child {
+            border-bottom: none;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-code {
+            font-size: 14px;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-status {
+            font-size: 12px;
+            color: #22c55e;
+            margin-top: 4px;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: right;
+        }
+
+        /* 激活区域样式 */
+        .activation-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .activation-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activation-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        /* 头像功能样式 */
+        .profile-avatar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-title {
+            font-size: 20px;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .avatar-frame {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 22px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .avatar-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #22c55e);
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .avatar-frame:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(139, 92, 246, 0.2);
+        }
+
+        .avatar-frame:hover::before {
+            opacity: 0.4;
+        }
+
+        .avatar-initial {
+            font-size: 64px;
+            color: #cbd5e1;
+            font-weight: bold;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-frame:hover .avatar-initial {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            display: none;
+        }
+
+        .avatar-actions {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .avatar-action-btn {
+            padding: 10px 28px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-upload {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-upload:hover {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .avatar-file-input {
+            display: none;
+        }
+
+        .avatar-notice {
+            font-size: 13px;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.5;
+            max-width: 300px;
+        }
+
+        /* 头像操作反馈弹窗 */
+        .avatar-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            padding: 16px 28px;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #e2e8f0;
+            font-size: 15px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .backend-content {
+                flex-direction: column;
+            }
+            .backend-sidebar {
+                width: 100%;
+            }
+            .sidebar-menu {
+                display: grid;
+网格模板列：重复(2，1fr)；
+间隙：8px；
+            }
+.profile-avatar{
+填料：20px；
+最大宽度：100%；
+            }
+.avatar-frame{
+宽度：150px；
+高度：150px；
+            }
+.avatar-初始值{
+字体大小：56px；
+            }
+.avatar-actions{
+弯曲方向：立柱；
+间隙：10px；
+宽度：90%；
+            }
+.avatar-action-btn{
+宽度：100%；
+对齐-内容：居中；
+填料：10px20px；
+            }
+.back-to-main-btn{
+宽度：150px；
+margin:30px auto40px；
+            }
+.logo{
+font-size:20px；
+顶部：15px；
+左：15px；
+            }
+        }
+
+/* 辅助样式 */
+.text-center{
+文本对齐：居中；
+        }
+.mt-4{
+margin-top:16px；
+        }
+.flex{
+显示：柔性；
+        }
+.gustify-center{
+对齐-内容：居中；
+        }
+.w-full{
+宽度：100%；
+        }
+.max-w-md{
+            max-width: 350px;
+        }
+    </style>
+    <!-- 引入像素字体（备用） -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+<！--左上角徽标-->
+<div class="logo">鲤鱼</div>
+
+<! -- 全局星光容器 -->
+<div class="star-container"id="globalStars"></div>
+
+<! -- 主页面装饰 -->
+<div class="main-decor">
+<div class="decor-circle decor-circle1"></div>
+<div class="decor-circle decor-circle2"></div>
+<div class="decor-grid"></div>
+<div class="decor-line line1"></div>
+<div class="decor-line line2"></div>
+</div>
+
+<! -- 页面切换星光容器 -->
+<div class="switch-stars-container"id="switchStarsContainer"></div>
+
+<! -- 头像操作反馈弹窗 -->
+<div class="avatar-toast"id="avatarToast">操作成功</div>
+
+<! -- 初始主界面按钮 -->
+<div class="卡盒">
+<div class="card card1"id="userCenterCard">用户中心</div>
+<div class="card Card2"id="buyCard">购买卡密</div>
+<div class="card card3"id="vipCenterCard">会员中心</div>
+</div>
+
+<! -- 页面容器 -->
+<div class="page-container"id="PageContainer">
+<! -- 登录页面 -->
+<div id="loginpage"class="页面活动">
+<div class="back-btn"id="loginBackBtn">←</div>
+<div class="page-header">
+<h2class="page-title">用户登录</h2>
+</div>
+<div class="弹性对齐中心">
+<div class="w-full max-w-md">
+<div class="form-group">
+<label class="form-label">账号</label>
+<input type="text"class="form-input"id="loginUsername"占位符="请输入账号">
+</div>
+<div class="form-group">
+<label class="form-label">密码</label>
+<input type="password"class="form-input"id="loginPassword"占位符="请输入密码">
+</div>
+<button class="form-btn"id="loginSubmit">登录</button>
+<p class="text-center mt-4">
+新用户？<a href="javascript：；"id="toRegLink"class="form-link">立即注册</a>
+</p>
+</div>
+</div>
+</div>
+
+<! -- 注册页面 -->
+<div id="registerPage"class="page">
+<div class="back-btn"id="regBackBtn">←</div>
+<div class="page-header">
+<h2class="page-title">用户注册</h2>
+</div>
+            <div class="flex justify-center">
+                <div class="w-full max-w-md">
+                    <div class="form-group">
+                        <label class="form-label">账号</label>
+                        <input type="text" class="form-input" id="regUsername" placeholder="请设置账号">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="regPassword" placeholder="请设置密码（6-20位字符）">
+                        <div class="form-hint">提示：密码长度为6-20位，包含字母和数字</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">用户激活码</label>
+                        <input type="text" class="form-input" id="verifyCode" placeholder="请输入用户激活码">
+                    </div>
+                    <button class="form-btn" id="regSubmit">注册</button>
+                    <p class="text-center mt-4">
+                        已有账号？<a href="javascript:;" id="toLoginLink" class="form-link">立即登录</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户后台页面 -->
+        <div id="userBackend" class="page">
+            <div class="backend-header">
+                <div class="backend-title">用户后台</div>
+                <button class="logout-btn" id="logoutBtn">退出登录</button>
+            </div>
+            <div class="backend-content">
+                <div class="backend-sidebar">
+                    <ul class="sidebar-menu">
+                        <li class="menu-item active" data-target="dashboard">控制台</li>
+                        <li class="menu-item" data-target="cards">我的卡密</li>
+                        <li class="menu-item" data-target="downloads">工具下载</li>
+                        <li class="menu-item" data-target="settings">账户设置</li>
+                    </ul>
+                </div>
+                <div class="backend-main" id="dashboard">
+                    <div class="main-title">控制台概览</div>
+                    
+                    <!-- 头像功能区域 -->
+                    <div class="profile-avatar">
+                        <div class="avatar-title">个人头像管理</div>
+                        <div class="avatar-frame" id="avatarFrame">
+                            <span class="avatar-initial" id="avatarInitial">U</span>
+                            <img class="avatar-image" id="avatarImage">
+                        </div>
+                        <div class="avatar-actions">
+                            <label class="avatar-action-btn btn-upload">
+                                📸 选择图片
+                                <input type="file" class="avatar-file-input" id="avatarFileInput" accept="image/jpeg,image/png,image/webp">
+                            </label>
+                            <button class="avatar-action-btn btn-reset" id="resetAvatarBtn">
+                                🔄 重置头像
+                            </button>
+                        </div>
+                        <div class="avatar-notice">
+                            支持JPG、PNG、WebP格式，建议尺寸200x200px，大小不超过5MB
+                        </div>
+                    </div>
+                    
+                    <!-- 数据卡片网格 -->
+                    <div class="dashboard-grid">
+                        <div class="data-card">
+                            <div class="data-title">📅 账号注册时间</div>
+                            <div class="data-value" id="registerTime">--</div>
+                            <div class="data-desc">账号创建永久有效</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">🔔 最近登录时间</div>
+                            <div class="data-value" id="lastLoginTime">--</div>
+                            <div class="data-desc">当前为最新登录</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">🗂️ 已激活卡密数</div>
+                            <div class="data-value" id="activatedCardCount">0</div>
+                            <div class="data-desc">新用户初始为0</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">⏱️ 卡密已使用时长</div>
+                            <div class="data-value" id="usedTime">0 小时</div>
+                            <div class="data-desc">累计激活使用时间</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">⌛ 卡密剩余时长</div>
+                            <div class="data-value" id="remainingTime">0 小时</div>
+                            <div class="data-desc">所有已激活卡密剩余时间</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">📅 卡密总到期时间</div>
+                            <div class="data-value" id="totalExpireTime">--</div>
+                            <div class="data-desc">所有卡密有效期截止时间</div>
+                        </div>
+                    </div>
+
+                    <div class="card-list">
+                        <div class="main-title" style="margin-bottom: 15px; font-size: 16px;">已激活卡密详情</div>
+                        <div id="activatedCardsList">
+                            <div class="card-item">
+                                <div class="card-info">
+                                    <div class="card-code">暂无已激活卡密</div>
+                                    <div class="card-status">未激活任何卡密</div>
+                                </div>
+                                <div class="card-time">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="backend-main" id="cards" style="display:none;">
+                    <div class="main-title">我的卡密</div>
+                    <div class="card-list" id="myCardsList">
+                        <div class="card-item">
+                            <div class="card-info">
+                                <div class="card-code">暂无已激活卡密</div>
+                                <div class="card-status">请激活新卡密</div>
+                            </div>
+                            <div class="card-time">--</div>
+                        </div>
+                    </div>
+
+                    <!-- 卡密激活区域 -->
+                    <div class="activation-section">
+                        <div class="activation-title">激活卡密</div>
+                        <div class="form-group">
+                            <label class="form-label">卡密</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" class="form-input" id="cardCodeInput" placeholder="输入卡密" style="max-width: 220px;">
+                                <button class="form-btn" id="activateCardBtn">激活</button>
+                            </div>
+                            <div class="form-hint">提示：输入获取到的卡密进行激活，同一账号不可重复使用同一卡密</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="backend-main" id="downloads" style="display:none;">
+                    <div class="main-title">工具下载</div>
+                    <div class="data-card">
+                        <div class="data-title">Carp辅助工具 v3.5</div>
+                        <div class="data-value">
+                            <a href="https://www.123865.com/s/7tNmvd-2zcDH" style="color:#3b82f6; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                                📥 点击下载
+                            </a>
+                        </div>
+                        <div class="data-desc">文件大小：356.47MB | 更新时间：2025-10-18</div>
+                    </div>
+                </div>
+
+                <div class="backend-main" id="settings" style="display:none;">
+                    <div class="main-title">账户设置</div>
+                    <div class="data-card" style="margin-bottom: 20px;">
+                        <div class="data-title">修改账户名称</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">当前账号</label>
+                                <input type="text" class="form-input" id="currentUsername" value="" disabled style="background: rgba(255,255,255,0.05);">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">新账号名称</label>
+                                <input type="text" class="form-input" id="newUsername" placeholder="请输入新账号名称">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">验证密码</label>
+                                <input type="password" class="form-input" id="verifyPwdForName" placeholder="输入密码验证身份">
+                            </div>
+                            <div class="success-hint" id="usernameSuccessHint">✓ 账号名称修改成功！</div>
+                            <button class="form-btn" id="saveUsernameBtn" style="width: fit-content;">保存修改</button>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-title">修改密码</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">原密码</label>
+                                <input type="password" class="form-input" id="oldPassword" placeholder="请输入原密码">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">新密码</label>
+                                <input type="password" class="form-input" id="newPassword" placeholder="请输入新密码（6-20位）">
+                                <div class="form-hint">提示：密码长度为6-20位，包含字母和数字</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">确认新密码</label>
+                                <input type="password" class="form-input" id="confirmNewPassword" placeholder="请再次输入新密码">
+                            </div>
+                            <div class="success-hint" id="passwordSuccessHint">✓ 密码修改成功！</div>
+                            <button class="form-btn" id="savePasswordBtn" style="width: fit-content;">保存修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="javascript:;" class="back-to-main-btn" id="backToMainBtn">返回主页面</a>
+        </div>
+    </div>
+
+    <script>
+        // 通用工具函数
+        const utils = {
+            createStars(container, count, config) {
+                container.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    const size = Math.random() * 2 + (config.minSize || 0.5);
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    const colors = config.colors || ['#3b82f6', '#8b5cf6', '#22c55e', '#ffffff'];
+                    star.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    const twinkleSpeed = Math.random() * (config.maxSpeed - config.minSpeed) + config.minSpeed;
+                    star.style.animationDuration = `${twinkleSpeed}s`;
+                    const randomOpacity = Math.random() * (config.maxOpacity - config.minOpacity) + config.minOpacity;
+                    const randomScale = Math.random() * (config.maxScale - config.minScale) + config.minScale;
+                    star.style.setProperty('--random-opacity', randomOpacity);
+                    star.style.setProperty('--random-scale', randomScale);
+                    star.style.animationDelay = `${Math.random() * (config.delay || 5)}s`;
+                    container.appendChild(star);
+                }
+            },
+            switchPage(fromPage, toPage, isBackToMain = false) {
+                this.createSwitchStars();
+                fromPage.classList.remove('active');
+                setTimeout(() => {
+                    if (isBackToMain) pageContainer.style.display = 'none';
+                    else toPage.classList.add('active');
+                }, 150);
+                setTimeout(() => switchStarsContainer.innerHTML = '', 800);
+            },
+            createSwitchStars(count = 50) {
+                switchStarsContainer.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'switch-star';
+                    const size = Math.random() * 3 + 1;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 0.5}s`;
+                    const colors = ['#3b82f6', '#8b5cf6', '#22c55e', '#ffffff'];
+                    star.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    switchStarsContainer.appendChild(star);
+                }
+            },
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+            },
+            saveToStorage(key, data) {
+                localStorage.setItem(key, JSON.stringify(data));
+            },
+            getFromStorage(key) {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            },
+            showToast(toastEl, message, duration = 2500) {
+                toastEl.textContent = message;
+                toastEl.classList.add('show');
+                setTimeout(() => {
+                    toastEl.classList.remove('show');
+                }, duration);
+            },
+            getUsernameInitial(username) {
+                return username ? username.charAt(0).toUpperCase() : 'U';
+            }
+        };
+
+        // 核心元素获取
+        const userCenterCard = document.getElementById('userCenterCard');
+        const buyCard = document.getElementById('buyCard');
+        const vipCenterCard = document.getElementById('vipCenterCard');
+        const pageContainer = document.getElementById('pageContainer');
+        const loginPage = document.getElementById('loginPage');
+        const registerPage = document.getElementById('registerPage');
+        const userBackend = document.getElementById('userBackend');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const toRegLink = document.getElementById('toRegLink');
+        const regUsername = document.getElementById('regUsername');
+        const regPassword = document.getElementById('regPassword');
+        const verifyCode = document.getElementById('verifyCode');
+        const regSubmit = document.getElementById('regSubmit');
+        const toLoginLink = document.getElementById('toLoginLink');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const mainSections = document.querySelectorAll('.backend-main');
+        const loginBackBtn = document.getElementById('loginBackBtn');
+        const regBackBtn = document.getElementById('regBackBtn');
+        const globalStars = document.getElementById('globalStars');
+        const switchStarsContainer = document.getElementById('switchStarsContainer');
+        const avatarToast = document.getElementById('avatarToast');
+        const backToMainBtn = document.getElementById('backToMainBtn');
+
+        // 功能模块元素
+Const registerTimeEl=document.getElementById('registerTime')；
+Const lastLoginTimeEl=document.getElementById('lastLoginTime')；
+常数activatedCardCountEl=文件。getElementById('activatedCardCount')；
+const usedTimeEl=document.getElementById('usedTime')；
+Const remainingTimeEl=document.getElementById('remainingTime')；
+Const totalExpireTimeEl=document.getElementById('totalExpireTime')；
+常数activatedCardsListEl=文件。getElementById('activatedCardsList')；
+Const myCardsListEl=document.getElementById('myCardsList')；
+Const cardCodeInput=document.getElementById('cardCodeInput')；
+常数activateCardBtn=document.getElementById('activateCardBtn')；
+Const currentUsernameEl=document.getElementById('currentUsername')；
+Const newUsernameEl=document.getElementById('newUsername')；
+const verifyPwdForNameEl=document.getElementById('verifyPwdForName')；
+const saveUsernameBtn=document.getElementById('saveUsernameBtn')；
+常量usernameSuccessHint=文件。getElementById('usernameSuccessHint')；
+常量oldPasswordInput=document.getElementById('oldPassword')；
+Const newPasswordInput=document.getElementById('newPassword')；
+常量confirmNewPasswordInput=文件。getElementById('confirmNewPassword')；
+const savePasswordBtn=document.getElementById('savePasswordBtn')；
+常量passwordSuccessHint=文件。getElementById('passwordSuccessHint')；
+Const avatarFrame=document.getElementById('avatarFrame')；
+const avatarInitial=document.getElementById('avatarInitial')；
+Const avatarImage=document.getElementById('avatarImage')；
+Const avatarFileInput=document.getElementById('avatarFileInput')；
+Const resetAvatarBtn=document.getElementById('resetAvatarBtn')；
+
+// 系统配置
+常数配置={
+user_ACTIVATION_CODE：'17662540581'，
+有效卡(_C)：[
+{代码：'1'，天数：30}，
+{代码：'5'，天数：25}，
+{代码：'666'，天数：30}，
+{代码：'888'，天数：45}
+            ],
+register_INTERVAL:3600000，
+Avatar_CONFIG：{
+Max_SIZE:5*1024*1024，
+Max_DIMENSION:1000，
+compress_QUALITY:0.75
+            },
+storage_KEYS：{
+用户：'system_users'，
+user_REGISTER_TIMES：'user_register_times'，
+user_PROFILES：'user_profiles'
+            }
+        };
+
+        // 初始化数据
+        let users = utils.getFromStorage(CONFIG.STORAGE_KEYS.USERS) || [];
+        let userRegisterTimes = utils.getFromStorage(CONFIG.STORAGE_KEYS.USER_REGISTER_TIMES) || {};
+        let userProfiles = utils.getFromStorage(CONFIG.STORAGE_KEYS.USER_PROFILES) || {};
+        let currentUser = null;
+        let isFirstLogin = true;
+
+        // 初始化星光
+        utils.createStars(globalStars, 200, {
+            minSpeed: 0.5,
+            maxSpeed: 3,
+            minOpacity: 0.3,
+            maxOpacity: 0.9,
+            minScale: 0.5,
+            maxScale: 1.2,
+            delay: 10
+        });
+
+        // 核心功能函数
+        function hasUserUsedCode(user, code) {
+            return user.activatedCards && user.activatedCards.some(card => card.code === code);
+        }
+
+        function calculateCardStats(user) {
+            const now = new Date().getTime();
+            let totalValidHours = 0;
+            let totalUsedHours = 0;
+            
+            if (user.activatedCards && user.activatedCards.length > 0) {
+                user.activatedCards.forEach(card => {
+                    totalValidHours += card.validDays * 24;
+                    totalUsedHours += Math.floor((now - card.activateTime) / 3600000);
+                });
+            }
+            
+            const totalRemainingHours = Math.max(0, totalValidHours - totalUsedHours);
+            const totalExpireTimestamp = now + totalRemainingHours * 3600000;
+            
+            return {
+                usedHours: totalUsedHours,
+                remainingHours: totalRemainingHours,
+                expireTime: totalExpireTimestamp > now ? totalExpireTimestamp : null
+            };
+        }
+
+        function refreshCardData(user) {
+            const stats = calculateCardStats(user);
+            const activatedCount = user.activatedCards ? user.activatedCards.length : 0;
+            
+            activatedCardCountEl.textContent = activatedCount;
+            usedTimeEl.textContent = `${stats.usedHours} 小时`;
+            remainingTimeEl.textContent = `${stats.remainingHours} 小时`;
+            totalExpireTimeEl.textContent = stats.expireTime ? utils.formatTime(stats.expireTime) : '已过期';
+            
+if(activationCode！=config.user_ACTIVATION_CODE){alert('用户激活码错误！')；返回；}
+if(users.some(u=>u.username==username)){alert('该账号已存在！')；返回；}
+Const passwordRegex=/^(?=.*[A-Za-z])(?=.*\d).{6,20}$/;
+if(！passwordRegex.test(password)){alert('密码格式错误！需6-20位，包含字母和数字')；返回；}
+Const now=新日期().getTime()；
+Const lastRegisterTime=userRegisterTimes[用户名]||0；
+if(现在-lastRegisterTime<CONFIG.REGISTER_INTERVAL){
+剩余常数=Math.ceil((CONFIG.REGISTER_INTERVAL-(现在-上次注册时间))/60000)；
+alert('每小时仅可注册1个账号，剩余${remaining}分钟后可注册‘)；
+返回；
+                            <div class="card-time">到期时间：${utils.formatTime(card.expireTime)}</div>
+                        </div>
+Const newUser={用户名，密码，注册时间：now，lastLoginTime:now，activatedCards：[]}；
+users.push(newUser)；
+userRegisterTimes[username]=now；
+                cardsHtml = `
+                    <div class="card-item">
+                        <div class="card-info">
+                            <div class="card-code">暂无已激活卡密</div>
+                            <div class="card-status">未激活任何卡密</div>
+                        </div>
+                        <div class="card-time">--</div>
+                    </div>
+                `;
+            }
+            
+            activatedCardsListEl.innerHTML = cardsHtml;
+            myCardsListEl.innerHTML = cardsHtml;
+        }
+
+功能更新仪表板(用户){
+registerTimeEl.textContent=utils.formatTime(user.registerTime)；
+Const now=新日期().getTime()；
+user.lastLoginTime=now；
+lastLoginTimeEl.textContent=utils.formatTime(现在)；
+refreshCardData(用户)；
+initAvatar(user.username)；
+utils。saveToStorage(CONFIG.Storage_KEYS.用户，用户)；
+        }
+
+// 卡密激活
+activateCardBtn.addEventListener('click'，()=>{
+if(！currentUser)返回；
+Const inputCode=cardCodeInput.value.trim()；
+if(！inputCode){alert('请输入卡密！')；返回；}
+if(hasUserUsedCode(currentUser，inputCode)){
+警惕的('该卡密已被当前账号使用，同一账号不可重复激活！')；
+cardCodeInput.value="；
+返回；
+            }
+const VALIDcard=CONFIG.VALID_CARDS.find(card=>card.code===inputCode)；
+if(！VALIDCARD){alert('卡密错误！请输入正确的卡密')；cardCodeInput.value="；return；}
+            
+if(！currentUser.activatedCards)currentUser.activatedCards=[]；
+Const now=新日期().getTime()；
+Const expiretime=now+validCard.days*24*3600000；
+currentUser.activatedCards.push({
+代码：inputCode，
+activateTime：现在，
+expiredtime:expiredtime，
+validDays:validCard.days
+            });
+            
+refreshCardData(当前用户)；
+cardCodeInput.value="；
+alert('加密激活成功！有效期${validCard.days}天‘)；
+utils。saveToStorage(CONFIG.Storage_KEYS.用户，用户)；
+        });
+
+// 头像功能
+函数initAvatar(用户名){
+avatarInitial.textContent=utils.getUsernameInitial(用户名)；
+Const userProfile=userProfiles[用户名]||{}；
+if(userProfile.avatarUrl){
+avatarImage.src=userProfile.avatarUrl；
+avatarImage.style.display='block'；
+avatarInitial.style.display='none'；
+}else{
+avatarImage.style.display='none'；
+avatarInitial.style.display='block'；
+            }
+        }
+
+        function handleImageUpload(file) {
+            if (!currentUser) {
+                utils.showToast(avatarToast, '请先登录后操作');
+                return;
+            }
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                utils.showToast(avatarToast, '仅支持JPG、PNG、WebP格式');
+                return;
+            }
+            if (file.size > CONFIG.AVATAR_CONFIG.MAX_SIZE) {
+                utils.showToast(avatarToast, '图片大小不能超过5MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxDim = CONFIG.AVATAR_CONFIG.MAX_DIMENSION;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > maxDim || height > maxDim) {
+                        const ratio = Math.min(maxDim / width, maxDim / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+                    
+Const canvas=document.createElement('canvas')；
+canvas.width=width；
+canvas.height=高度；
+Const ctx=canvas.getContext('2d')；
+ctx.clearRect(0，0，width，height)；
+常数半径=Math.min(宽度、高度)/2；
+ctx.beginPath()；
+ctx.arc(宽度/2，高度/2，半径，0，数学PI*2)；
+ctx.clip()；
+ctx.drawImage(img，0，0，width，height)；
+                    
+canvas.toBlob(函数(blob){
+Const resultReader=新建FileReader()；
+resultReader.onload=函数(resulte){
+Const avatarUrl=resultE.target.result；
+if(！userProfiles[currentUser.username])userProfiles[currentUser.username]={}；
+userProfiles[currentUser.用户名]。avatarUrl=avatarUrl；
+utils。saveToStorage(配置存储_KEYS.User_PROFILES，userProfile)；
+avatarImage.src=avatarUrl；
+avatarImage.style.display='block'；
+avatarInitial.style.display='none'；
+utils.show Toast(头像Toast，'头像上传成功')；
+                        };
+resultReader.readAsDataURL(blob)；
+}，'image/webp'，CONFIG.Avatar_CONFIG.Compress_QUALITY)；
+                };
+img.src=e.target.result；
+            };
+reader.readAsDataURL(文件)；
+        }
+
+resetAvatarBtn.addEventListener('click'，()=>{
+if(！currentUser){
+utils.show Toast(头像Toast，'请先登录后操作')；
+返回；
+            }
+if(userProfiles[currentUser.username]){
+删除用户配置文件[currentUser.username].avatarUrl；
+utils。saveToStorage(配置存储_KEYS.User_PROFILES，userProfile)；
+            }
+avatarImage.style.display='none'；
+avatarInitial.style.display='block'；
+avatarInitial。textContent=utils.getUsernameInitial(当前用户。用户名)；
+utils.show Toast(头像Toast，'头像已重置')；
+        });
+
+avatarFileInput.addEventListener('change'，函数(e){
+Const文件=e.target.files[0]；
+if(文件){
+handleImageUpload(文件)；
+avatarFileInput.value="；
+            }
+        });
+
+addEventListener('click'，()=>avatarFileInput。点击())；
+
+// 账户设置
+saveUsernameBtn.addEventListener('click'，()=>{
+if(！currentUser)返回；
+Const newUsername=newUsernameEl.value.trim()；
+const verifyPwd=verifyPwdForNameEl.value.trim()；
+if(！newUsername||！verifyPwd){alert('请填写完整信息！')；返回；}
+if(verifyPwd！==currentUser.password){alert('密码验证错误！')；返回；}
+if(users.some(u=>u.username===newUsername)){alert('该账号名称已被占用！')；返回；}
+            
+if(userProfiles[currentUser.username]){
+userProfiles[newUsername]=userProfiles[currentUser.用户名]；
+删除用户配置文件[currentUser.username]；
+配置存储_KEYS.User_PROFILES，userProfile；
+            }
+            
+currentUser.username=newUsername；
+currentUsernameEl.value=newUsername；
+newUsernameEl.value="；
+verifyPwdForNameEl.value="；
+avatarInitial.textContent=utils.getUsernameInitial(newUsername)；
+usernameSuccessHint.style.display='block'；
+setTimeout(()=>usernameSuccessHint。风格。display='none'，3000)；
+utils.saveToStorage(CONFIG.Storage_KEYS.用户，用户)；
+        });
+
+savePasswordBtn.addEventListener('click'，()=>{
+if(！currentUser)返回；
+常量oldPassword=oldPasswordInput.value.trim()；
+const newPassword=newPasswordInput.value.trim()；
+Const confirmNewPassword=confirmNewPasswordInput。价值。修剪()；
+如果(！oldPassword||！newPassword||！confirmNewPassword){alert('请填写完整密码信息！')；返回；}
+if(oldPassword！==currentUser.password){alert('原密码错误！')；返回；}
+Const passwordRegex=/^(?=.*[A-Za-z])(?=.*\d).{6,20}$/;
+if(！passwordRegex.test(newPassword)){alert('新密码格式错误！需6-20位，包含字母和数字')；返回；}
+if(newPassword！==confirmNewPassword){alert('两次输入的新密码不一致！')；返回；}
+if(newPassword===旧密码){alert('新密码不能与原密码相同！')；返回；}
+            
+currentUser.password=newPassword；
+passwordSuccessHint.style.display='block'；
+oldPasswordInput.value="；
+newPasswordInput.value="；
+confirmNewPasswordInput.value="；
+setTimeout(()=>passwordSuccessHint。风格。display='none'，3000)；
+utils.saveToStorage(CONFIG.Storage_KEYS.用户，用户)；
+        });
+
+// 注册登录逻辑
+regSubmit.addEventListener('click'，()=>{
+Const username=regUsername.value.trim()；
+Const password=regPassword.value.trim()；
+常数activationCode=verifyCode.value.trim()；
+如果(！用户名||！密码||！activationCode){alert('请填写完整信息！')；返回；}
+if(activationCode！=config.user_ACTIVATION_CODE){alert('用户激活码错误！')；返回；}
+if(users.some(u=>u.username==username)){alert('该账号已存在！')；返回；}
+Const passwordRegex=/^(?=.*[A-Za-z])(?=.*\d).{6,20}$/;
+if(！passwordRegex.test(password)){alert('密码格式错误！需6-20位，包含字母和数字')；返回；}
+常量现在=新日期().getTime()；
+常数lastRegisterTime=userRegisterTimes[用户名]||0；
+if(现在-lastRegisterTime<CONFIG.register_INTERVAL){
+剩余常数=Math.ceil((CONFIG.REGISTER_interval-(现在-上次注册时间))/60000)；
+alert('每小时仅可注册1个账号，剩余${remaining}分钟后可注册‘)；
+返回；
+            }
+            
+常量newuser={用户名，密码，注册时间：now，lastLoginTime:now，activatedCards：[]}；
+users.push(newUser)；
+userRegisterTimes[username]=now；
+utils.saveToStorage(CONFIG.Storage_KEYS.用户，用户)；
+utils.saveToStorage(配置存储密钥.用户寄存器时间，userRegisterTimes)；
+            
+警惕的('注册成功，即将自动登录！ ')；
+loginUsername.value=username；
+loginPassword.value=密码；
+utils.switchPage(registerPage，loginpage)；
+            
+setTimeout(()=>{
+currentUser=newUser；
+utils.switchPage(登录页面，UserBackend)；
+updateDashboard(newUser)；
+regUsername.value="；
+regPassword.value="；
+verifyCode.value="；
+}, 800);
+        });
+
+常量passwordSuccessHint=文件。getElementById('passwordSuccessHint')；
+const avatarFrame=document.getElementById('avatarFrame')；
+const avatarInitial=document.getElementById('avatarInitial')；
+Const avatarImage=document.getElementById('avatarImage')；
+Const avatarFileInput=document.getElementById('avatarFileInput')；
+Const resetAvatarBtn=document.getElementById('resetAvatarBtn')；
+setTimeout(()=>passwordSuccessHint。风格。display='none'，3000)；
+// 系统配置
+常数配置={
+user_ACTIVATION_CODE：'17662540581'，
+有效卡(_C)：[
+{代码：'1'，天数：30}，
+{代码：'5'，天数：25}，
+
+{代码：'888'，天数：45}
+utils。显示吐司面包(头像Toast，'欢迎进入用户中心！')；
+寄存器间隔(_INTERVAL)：3600000，
+头像_配置：{
+最大尺寸(_S)：5*1024*1024，
+
+压缩质量(_Q)：0.75
+userCenterCard。addEventListener('单击'，()=>{
+storage_KEYS：{
+用户：'system_users'，
+user_REGISTER_TIMES：'User_register_times'，
+
+买卡。addEventListener('单击'，()=>{
+窗户。打开('https://lv.youxi186.com/shop/Carpauxiliary'，'_blank')；
+})});
+
+让用户=
+让userRegisterTimes=
+让userProfiles=
+让currentUser=null；
+
+loginBackBtn。
+// 初始化星光
+utils。
+
+最大速度：
+MinOpacity：
+
+最小刻度：
+最大刻度：
+延迟：
+})});
+当前用户=
+// 核心功能函数
+函数具有UserUsedCode
+返回用户。activatedCards&&user。
+
+// 菜单切换
+函数
+常量现在=新日期
+设totalValidHours=
+设总UsedHours=
+如果(！currentUser){
+如果(用户。activatedCards用户(&&user)。activatedCards.长度>0){
+用户。
+totalValidHours+=卡。
+全部的UsedHours+=数学下限
+})});
+}
+返回；
+常量总剩余小时数=数学最大值(0，总有效小时数-总已用小时数)；
+</html>
