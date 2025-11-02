@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+  </head>
+  <body>	
+	<h1></h1>
+	<p></p>  
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技感用户系统</title>
+    <style>
+        /* 全局像素字体（MC风格） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 主页面LOGO（左上角） */
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #3b82f6;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
+            z-index: 10;
+        }
+
+        /* 公共星光样式 */
+        .star-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 1s infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: var(--random-opacity); transform: scale(var(--random-scale)); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+
+        /* 主页面装饰 */
+        .main-decor {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .decor-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent 70%);
+            filter: blur(40px);
+        }
+
+        .decor-circle1 {
+            width: 400px;
+            height: 400px;
+            top: 10%;
+            left: 10%;
+        }
+
+        .decor-circle2 {
+            width: 350px;
+            height: 350px;
+            bottom: 10%;
+            right: 10%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
+        }
+
+        .decor-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .decor-line {
+            position: absolute;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            height: 1px;
+            filter: blur(1px);
+            opacity: 0.3;
+        }
+
+        .line1 {
+            width: 80%;
+            top: 30%;
+            left: 10%;
+        }
+
+        .line2 {
+            width: 60%;
+            top: 70%;
+            left: 20%;
+        }
+
+        /* 页面切换星光 */
+        .switch-stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 101;
+            pointer-events: none;
+        }
+
+        .switch-star {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            opacity: 0;
+            animation: switchFlash 0.8s ease-in-out forwards;
+        }
+
+        @keyframes switchFlash {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* 核心按钮样式 */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            z-index: 1;
+            margin-top: 40px;
+        }
+
+        .card {
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 0 30px;
+            height: 60px;
+            width: 220px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(59, 130, 246, 0.1),
+                rgba(139, 92, 246, 0.2),
+                rgba(34, 197, 94, 0.1)
+            );
+            transform: translateX(-100%);
+            animation: flow 6s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .card1 {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.4));
+        }
+
+        .card2 {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.4));
+        }
+
+        .card3 {
+            background: linear-gradient(135deg, #ffd700, #ff9500, #ff4500, #ff00ff, #9900ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        .card2:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+
+        .card3:hover {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+            border-color: rgba(255, 215, 0, 0.8);
+        }
+
+        /* 页面容器 */
+        .page-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            padding: 30px;
+            color: white;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            overflow-y: auto;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* 通用组件样式 */
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #3b82f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 102;
+        }
+
+        .back-btn:hover {
+            background: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+            transform: scale(1.1);
+        }
+
+        .back-to-main-btn {
+            display: block;
+            width: 180px;
+            height: 45px;
+            margin: 40px auto 60px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            line-height: 45px;
+            text-decoration: none;
+        }
+
+        .back-to-main-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #cbd5e1;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+
+        .form-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #22c55e);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+        }
+
+        .form-link {
+            color: #3b82f6;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .form-link:hover {
+            color: #8b5cf6;
+            text-decoration: underline;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .success-hint {
+            color: #22c55e;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* 用户后台样式 */
+        .backend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .backend-title {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+
+        .backend-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .backend-sidebar {
+            width: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #cbd5e1;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(139, 92, 246, 0.1);
+            color: white;
+            border-left: 3px solid #8b5cf6;
+            padding-left: 12px;
+        }
+
+        .backend-main {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .main-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        /* 控制台样式 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        .data-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-value {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #22c55e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .data-desc {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .card-list {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 18px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .card-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-item:last-child {
+            border-bottom: none;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-code {
+            font-size: 14px;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-status {
+            font-size: 12px;
+            color: #22c55e;
+            margin-top: 4px;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: right;
+        }
+
+        /* 激活区域样式 */
+        .activation-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .activation-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activation-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        /* 头像功能样式 */
+        .profile-avatar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-title {
+            font-size: 20px;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .avatar-frame {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 22px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .avatar-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #22c55e);
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .avatar-frame:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(139, 92, 246, 0.2);
+        }
+
+        .avatar-frame:hover::before {
+            opacity: 0.4;
+        }
+
+        .avatar-initial {
+            font-size: 64px;
+            color: #cbd5e1;
+            font-weight: bold;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-frame:hover .avatar-initial {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            display: none;
+        }
+
+        .avatar-actions {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .avatar-action-btn {
+            padding: 10px 28px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-upload {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-upload:hover {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .avatar-file-input {
+            display: none;
+        }
+
+        .avatar-notice {
+            font-size: 13px;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.5;
+            max-width: 300px;
+        }
+
+        /* 头像操作反馈弹窗 */
+        .avatar-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            padding: 16px 28px;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #e2e8f0;
+            font-size: 15px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .backend-content {
+                flex-direction: column;
+            }
+            .backend-sidebar {
+                width: 100%;
+            }
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .profile-avatar {
+                padding: 20px;
+                max-width: 100%;
+            }
+            .avatar-frame {
+                width: 150px;
+                height: 150px;
+            }
+            .avatar-initial {
+                font-size: 56px;
+            }
+            .avatar-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 90%;
+            }
+            .avatar-action-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 10px 20px;
+            }
+            .back-to-main-btn {
+                width: 150px;
+                margin: 30px auto 40px;
+            }
+            .logo {
+                font-size: 20px;
+                top: 15px;
+                left: 15px;
+            }
+        }
+
+        /* 辅助样式 */
+        .text-center {
+            text-align: center;
+        }
+        .mt-4 {
+            margin-top: 16px;
+        }
+        .flex {
+            display: flex;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .max-w-md {
+            max-width: 350px;
+        }
+    </style>
+    <!-- 引入像素字体（备用） -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 左上角LOGO -->
+    <div class="logo">CARP</div>
+
+    <!-- 全局星光容器 -->
+    <div class="star-container" id="globalStars"></div>
+
+    <!-- 主页面装饰 -->
+    <div class="main-decor">
+        <div class="decor-circle decor-circle1"></div>
+        <div class="decor-circle decor-circle2"></div>
+        <div class="decor-grid"></div>
+        <div class="decor-line line1"></div>
+        <div class="decor-line line2"></div>
+    </div>
+
+    <!-- 页面切换星光容器 -->
+    <div class="switch-stars-container" id="switchStarsContainer"></div>
+
+    <!-- 头像操作反馈弹窗 -->
+    <div class="avatar-toast" id="avatarToast">操作成功</div>
+
+    <!-- 初始主界面按钮 -->
+    <div class="card-container">
+        <div class="card card1" id="userCenterCard">用户中心</div>
+        <div class="card card2" id="buyCard">购买卡密</div>
+        <div class="card card3" id="vipCenterCard">会员中心</div>
+    </div>
+
+    <!-- 页面容器 -->
+    <div class="page-container" id="pageContainer">
+        <!-- 登录页面 -->
+        <div id="loginPage" class="page active">
+            <div class="back-btn" id="loginBackBtn">←</div>
+            <div class="page-header">
+                <h2 class="page-title">用户登录</h2>
+            </div>
+            <div class="flex justify-center">
+                <div class="w-full max-w-md">
+                    <div class="form-group">
+                        <label class="form-label">账号</label>
+                        <input type="text" class="form-input" id="loginUsername" placeholder="请输入账号">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="请输入密码">
+                    </div>
+                    <button class="form-btn" id="loginSubmit">登录</button>
+                    <p class="text-center mt-4">
+                        新用户？<a href="javascript:;" id="toRegLink" class="form-link">立即注册</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注册页面 -->
+        <div id="registerPage" class="page">
+            <div class="back-btn" id="regBackBtn">←</div>
+            <div class="page-header">
+                <h2 class="page-title">用户注册</h2>
+            </div>
+            <div class="flex justify-center">
+                <div class="w-full max-w-md">
+                    <div class="form-group">
+                        <label class="form-label">账号</label>
+                        <input type="text" class="form-input" id="regUsername" placeholder="请设置账号">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="regPassword" placeholder="请设置密码（6-20位字符）">
+                        <div class="form-hint">提示：密码长度为6-20位，包含字母和数字</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">用户激活码</label>
+                        <input type="text" class="form-input" id="verifyCode" placeholder="请输入用户激活码">
+                    </div>
+                    <button class="form-btn" id="regSubmit">注册</button>
+                    <p class="text-center mt-4">
+                        已有账号？<a href="javascript:;" id="toLoginLink" class="form-link">立即登录</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户后台页面 -->
+        <div id="userBackend" class="page">
+            <div class="backend-header">
+                <div class="backend-title">用户后台</div>
+                <button class="logout-btn" id="logoutBtn">退出登录</button>
+            </div>
+            <div class="backend-content">
+                <div class="backend-sidebar">
+                    <ul class="sidebar-menu">
+                        <li class="menu-item active" data-target="dashboard">控制台</li>
+                        <li class="menu-item" data-target="cards">我的卡密</li>
+                        <li class="menu-item" data-target="downloads">工具下载</li>
+                        <li class="menu-item" data-target="settings">账户设置</li>
+                    </ul>
+                </div>
+                <div class="backend-main" id="dashboard">
+                    <div class="main-title">控制台概览</div>
+                    
+                    <!-- 头像功能区域 -->
+                    <div class="profile-avatar">
+                        <div class="avatar-title">个人头像管理</div>
+                        <div class="avatar-frame" id="avatarFrame">
+                            <span class="avatar-initial" id="avatarInitial">U</span>
+                            <img class="avatar-image" id="avatarImage">
+                        </div>
+                        <div class="avatar-actions">
+                            <label class="avatar-action-btn btn-upload">
+                                📸 选择图片
+                                <input type="file" class="avatar-file-input" id="avatarFileInput" accept="image/jpeg,image/png,image/webp">
+                            </label>
+                            <button class="avatar-action-btn btn-reset" id="resetAvatarBtn">
+                                🔄 重置头像
+                            </button>
+                        </div>
+                        <div class="avatar-notice">
+                            支持JPG、PNG、WebP格式，建议尺寸200x200px，大小不超过5MB
+                        </div>
+                    </div>
+                    
+                    <!-- 数据卡片网格 -->
+                    <div class="dashboard-grid">
+                        <div class="data-card">
+                            <div class="data-title">📅 账号注册时间</div>
+                            <div class="data-value" id="registerTime">--</div>
+                            <div class="data-desc">账号创建永久有效</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">🔔 最近登录时间</div>
+                            <div class="data-value" id="lastLoginTime">--</div>
+                            <div class="data-desc">当前为最新登录</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">🗂️ 已激活卡密数</div>
+                            <div class="data-value" id="activatedCardCount">0</div>
+                            <div class="data-desc">新用户初始为0</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">⏱️ 卡密已使用时长</div>
+                            <div class="data-value" id="usedTime">0 小时</div>
+                            <div class="data-desc">累计激活使用时间</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">⌛ 卡密剩余时长</div>
+                            <div class="data-value" id="remainingTime">0 小时</div>
+                            <div class="data-desc">所有已激活卡密剩余时间</div>
+                        </div>
+                        <div class="data-card">
+                            <div class="data-title">📅 卡密总到期时间</div>
+                            <div class="data-value" id="totalExpireTime">--</div>
+                            <div class="data-desc">所有卡密有效期截止时间</div>
+                        </div>
+                    </div>
+
+                    <div class="card-list">
+                        <div class="main-title" style="margin-bottom: 15px; font-size: 16px;">已激活卡密详情</div>
+                        <div id="activatedCardsList">
+                            <div class="card-item">
+                                <div class="card-info">
+                                    <div class="card-code">暂无已激活卡密</div>
+                                    <div class="card-status">未激活任何卡密</div>
+                                </div>
+                                <div class="card-time">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="backend-main" id="cards" style="display:none;">
+                    <div class="main-title">我的卡密</div>
+                    <div class="card-list" id="myCardsList">
+                        <div class="card-item">
+                            <div class="card-info">
+                                <div class="card-code">暂无已激活卡密</div>
+                                <div class="card-status">请激活新卡密</div>
+                            </div>
+                            <div class="card-time">--</div>
+                        </div>
+                    </div>
+
+                    <!-- 卡密激活区域 -->
+                    <div class="activation-section">
+                        <div class="activation-title">激活卡密</div>
+                        <div class="form-group">
+                            <label class="form-label">卡密</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" class="form-input" id="cardCodeInput" placeholder="输入卡密" style="max-width: 220px;">
+                                <button class="form-btn" id="activateCardBtn">激活</button>
+                            </div>
+                            <div class="form-hint">提示：输入获取到的卡密进行激活，同一账号不可重复使用同一卡密</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="backend-main" id="downloads" style="display:none;">
+                    <div class="main-title">工具下载</div>
+                    <div class="data-card">
+                        <div class="data-title">Carp辅助工具 v3.5</div>
+                        <div class="data-value">
+                            <a href="https://www.123865.com/s/7tNmvd-2zcDH" style="color:#3b82f6; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                                📥 点击下载
+                            </a>
+                        </div>
+                        <div class="data-desc">文件大小：356.47MB | 更新时间：2025-10-18</div>
+                    </div>
+                </div>
+
+                <div class="backend-main" id="settings" style="display:none;">
+                    <div class="main-title">账户设置</div>
+                    <div class="data-card" style="margin-bottom: 20px;">
+                        <div class="data-title">修改账户名称</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">当前账号</label>
+                                <input type="text" class="form-input" id="currentUsername" value="" disabled style="background: rgba(255,255,255,0.05);">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">新账号名称</label>
+                                <input type="text" class="form-input" id="newUsername" placeholder="请输入新账号名称">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">验证密码</label>
+                                <input type="password" class="form-input" id="verifyPwdForName" placeholder="输入密码验证身份">
+                            </div>
+                            <div class="success-hint" id="usernameSuccessHint">✓ 账号名称修改成功！</div>
+                            <button class="form-btn" id="saveUsernameBtn" style="width: fit-content;">保存修改</button>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-title">修改密码</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">原密码</label>
+                                <input type="password" class="form-input" id="oldPassword" placeholder="请输入原密码">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">新密码</label>
+                                <input type="password" class="form-input" id="newPassword" placeholder="请输入新密码（6-20位）">
+                                <div class="form-hint">提示：密码长度为6-20位，包含字母和数字</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">确认新密码</label>
+                                <input type="password" class="form-input" id="confirmNewPassword" placeholder="请再次输入新密码">
+                            </div>
+                            <div class="success-hint" id="passwordSuccessHint">✓ 密码修改成功！</div>
+                            <button class="form-btn" id="savePasswordBtn" style="width: fit-content;">保存修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="javascript:;" class="back-to-main-btn" id="backToMainBtn">返回主页面</a>
+        </div>
+    </div>
+
+    <script>
+        // 通用工具函数
+        const utils = {
+            createStars(container, count, config) {
+                container.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    const size = Math.random() * 2 + (config.minSize || 0.5);
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    const colors = config.colors || ['#3b82f6', '#8b5cf6', '#22c55e', '#ffffff'];
+                    star.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    const twinkleSpeed = Math.random() * (config.maxSpeed - config.minSpeed) + config.minSpeed;
+                    star.style.animationDuration = `${twinkleSpeed}s`;
+                    const randomOpacity = Math.random() * (config.maxOpacity - config.minOpacity) + config.minOpacity;
+                    const randomScale = Math.random() * (config.maxScale - config.minScale) + config.minScale;
+                    star.style.setProperty('--random-opacity', randomOpacity);
+                    star.style.setProperty('--random-scale', randomScale);
+                    star.style.animationDelay = `${Math.random() * (config.delay || 5)}s`;
+                    container.appendChild(star);
+                }
+            },
+            switchPage(fromPage, toPage, isBackToMain = false) {
+                this.createSwitchStars();
+                fromPage.classList.remove('active');
+                setTimeout(() => {
+                    if (isBackToMain) pageContainer.style.display = 'none';
+                    else toPage.classList.add('active');
+                }, 150);
+                setTimeout(() => switchStarsContainer.innerHTML = '', 800);
+            },
+            createSwitchStars(count = 50) {
+                switchStarsContainer.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'switch-star';
+                    const size = Math.random() * 3 + 1;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 0.5}s`;
+                    const colors = ['#3b82f6', '#8b5cf6', '#22c55e', '#ffffff'];
+                    star.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    switchStarsContainer.appendChild(star);
+                }
+            },
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+            },
+            saveToStorage(key, data) {
+                localStorage.setItem(key, JSON.stringify(data));
+            },
+            getFromStorage(key) {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            },
+            showToast(toastEl, message, duration = 2500) {
+                toastEl.textContent = message;
+                toastEl.classList.add('show');
+                setTimeout(() => {
+                    toastEl.classList.remove('show');
+                }, duration);
+            },
+            getUsernameInitial(username) {
+                return username ? username.charAt(0).toUpperCase() : 'U';
+            }
+        };
+
+        // 核心元素获取
+        const userCenterCard = document.getElementById('userCenterCard');
+        const buyCard = document.getElementById('buyCard');
+        const vipCenterCard = document.getElementById('vipCenterCard');
+        const pageContainer = document.getElementById('pageContainer');
+        const loginPage = document.getElementById('loginPage');
+        const registerPage = document.getElementById('registerPage');
+        const userBackend = document.getElementById('userBackend');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const toRegLink = document.getElementById('toRegLink');
+        const regUsername = document.getElementById('regUsername');
+        const regPassword = document.getElementById('regPassword');
+        const verifyCode = document.getElementById('verifyCode');
+        const regSubmit = document.getElementById('regSubmit');
+        const toLoginLink = document.getElementById('toLoginLink');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const mainSections = document.querySelectorAll('.backend-main');
+        const loginBackBtn = document.getElementById('loginBackBtn');
+        const regBackBtn = document.getElementById('regBackBtn');
+        const globalStars = document.getElementById('globalStars');
+        const switchStarsContainer = document.getElementById('switchStarsContainer');
+        const avatarToast = document.getElementById('avatarToast');
+        const backToMainBtn = document.getElementById('backToMainBtn');
+
+        // 功能模块元素
+        const registerTimeEl = document.getElementById('registerTime');
+        const lastLoginTimeEl = document.getElementById('lastLoginTime');
+        const activatedCardCountEl = document.getElementById('activatedCardCount');
+        const usedTimeEl = document.getElementById('usedTime');
+        const remainingTimeEl = document.getElementById('remainingTime');
+        const totalExpireTimeEl = document.getElementById('totalExpireTime');
+        const activatedCardsListEl = document.getElementById('activatedCardsList');
+        const myCardsListEl = document.getElementById('myCardsList');
+        const cardCodeInput = document.getElementById('cardCodeInput');
+        const activateCardBtn = document.getElementById('activateCardBtn');
+        const currentUsernameEl = document.getElementById('currentUsername');
+        const newUsernameEl = document.getElementById('newUsername');
+        const verifyPwdForNameEl = document.getElementById('verifyPwdForName');
+        const saveUsernameBtn = document.getElementById('saveUsernameBtn');
+        const usernameSuccessHint = document.getElementById('usernameSuccessHint');
+        const oldPasswordInput = document.getElementById('oldPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+        const savePasswordBtn = document.getElementById('savePasswordBtn');
+        const passwordSuccessHint = document.getElementById('passwordSuccessHint');
+        const avatarFrame = document.getElementById('avatarFrame');
+        const avatarInitial = document.getElementById('avatarInitial');
+        const avatarImage = document.getElementById('avatarImage');
+        const avatarFileInput = document.getElementById('avatarFileInput');
+        const resetAvatarBtn = document.getElementById('resetAvatarBtn');
+
+        // 系统配置
+        const CONFIG = {
+            USER_ACTIVATION_CODE: '17662540581',
+            VALID_CARDS: [
+                { code: '1', days: 30 },
+                { code: '5', days: 25 },
+                { code: '666', days: 30 },
+                { code: '888', days: 45 }
+            ],
+            REGISTER_INTERVAL: 3600000,
+            AVATAR_CONFIG: {
+                MAX_SIZE: 5 * 1024 * 1024,
+                MAX_DIMENSION: 1000,
+                COMPRESS_QUALITY: 0.75
+            },
+            STORAGE_KEYS: {
+                USERS: 'system_users',
+                USER_REGISTER_TIMES: 'user_register_times',
+                USER_PROFILES: 'user_profiles'
+            }
+        };
+
+        // 初始化数据
+        let users = utils.getFromStorage(CONFIG.STORAGE_KEYS.USERS) || [];
+        let userRegisterTimes = utils.getFromStorage(CONFIG.STORAGE_KEYS.USER_REGISTER_TIMES) || {};
+        let userProfiles = utils.getFromStorage(CONFIG.STORAGE_KEYS.USER_PROFILES) || {};
+        let currentUser = null;
+        let isFirstLogin = true;
+
+        // 初始化星光
+        utils.createStars(globalStars, 200, {
+            minSpeed: 0.5,
+            maxSpeed: 3,
+            minOpacity: 0.3,
+            maxOpacity: 0.9,
+            minScale: 0.5,
+            maxScale: 1.2,
+            delay: 10
+        });
+
+        // 核心功能函数
+        function hasUserUsedCode(user, code) {
+            return user.activatedCards && user.activatedCards.some(card => card.code === code);
+        }
+
+        function calculateCardStats(user) {
+            const now = new Date().getTime();
+            let totalValidHours = 0;
+            let totalUsedHours = 0;
+            
+            if (user.activatedCards && user.activatedCards.length > 0) {
+                user.activatedCards.forEach(card => {
+                    totalValidHours += card.validDays * 24;
+                    totalUsedHours += Math.floor((now - card.activateTime) / 3600000);
+                });
+            }
+            
+            const totalRemainingHours = Math.max(0, totalValidHours - totalUsedHours);
+            const totalExpireTimestamp = now + totalRemainingHours * 3600000;
+            
+            return {
+                usedHours: totalUsedHours,
+                remainingHours: totalRemainingHours,
+                expireTime: totalExpireTimestamp > now ? totalExpireTimestamp : null
+            };
+        }
+
+        function refreshCardData(user) {
+            const stats = calculateCardStats(user);
+            const activatedCount = user.activatedCards ? user.activatedCards.length : 0;
+            
+            activatedCardCountEl.textContent = activatedCount;
+            usedTimeEl.textContent = `${stats.usedHours} 小时`;
+            remainingTimeEl.textContent = `${stats.remainingHours} 小时`;
+            totalExpireTimeEl.textContent = stats.expireTime ? utils.formatTime(stats.expireTime) : '已过期';
+            
+            let cardsHtml = '';
+            if (activatedCount > 0) {
+                user.activatedCards.forEach(card => {
+                    const expireHours = Math.floor((card.expireTime - new Date().getTime()) / 3600000);
+                    cardsHtml += `
+                        <div class="card-item">
+                            <div class="card-info">
+                                <div class="card-code">${card.code}</div>
+                                <div class="card-status">${expireHours > 0 ? '正常' : '已过期'}</div>
+                            </div>
+                            <div class="card-time">到期时间：${utils.formatTime(card.expireTime)}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                cardsHtml = `
+                    <div class="card-item">
+                        <div class="card-info">
+                            <div class="card-code">暂无已激活卡密</div>
+                            <div class="card-status">未激活任何卡密</div>
+                        </div>
+                        <div class="card-time">--</div>
+                    </div>
+                `;
+            }
+            
+            activatedCardsListEl.innerHTML = cardsHtml;
+            myCardsListEl.innerHTML = cardsHtml;
+        }
+
+        function updateDashboard(user) {
+            registerTimeEl.textContent = utils.formatTime(user.registerTime);
+            const now = new Date().getTime();
+            user.lastLoginTime = now;
+            lastLoginTimeEl.textContent = utils.formatTime(now);
+            refreshCardData(user);
+            initAvatar(user.username);
+            utils.saveToStorage(CONFIG.STORAGE_KEYS.USERS, users);
+        }
+
+        // 卡密激活
+        activateCardBtn.addEventListener('click', () => {
+            if (!currentUser) return;
+            const inputCode = cardCodeInput.value.trim();
+            if (!inputCode) { alert('请输入卡密！'); return; }
+            if (hasUserUsedCode(currentUser, inputCode)) {
+                alert('该卡密已被当前账号使用，同一账号不可重复激活！');
+                cardCodeInput.value = '';
+                return;
+            }
+            const validCard = CONFIG.VALID_CARDS.find(card => card.code === inputCode);
+            if (!validCard) { alert('卡密错误！请输入正确的卡密'); cardCodeInput.value = ''; return; }
+            
+            if (!currentUser.activatedCards) currentUser.activatedCards = [];
+            const now = new Date().getTime();
+            const expireTime = now + validCard.days * 24 * 3600000;
+            currentUser.activatedCards.push({ 
+                code: inputCode, 
+                activateTime: now, 
+                expireTime: expireTime, 
+                validDays: validCard.days
+            });
+            
+            refreshCardData(currentUser);
+            cardCodeInput.value = '';
+            alert(`卡密激活成功！有效期${validCard.days}天`);
+            utils.saveToStorage(CONFIG.STORAGE_KEYS.USERS, users);
+        });
+
+        // 头像功能
+        function initAvatar(username) {
+            avatarInitial.textContent = utils.getUsernameInitial(username);
+            const userProfile = userProfiles[username] || {};
+            if (userProfile.avatarUrl) {
+                avatarImage.src = userProfile.avatarUrl;
+                avatarImage.style.display = 'block';
+                avatarInitial.style.display = 'none';
+            } else {
+                avatarImage.style.display = 'none';
+                avatarInitial.style.display = 'block';
+            }
+        }
+
+        function handleImageUpload(file) {
+            if (!currentUser) {
+                utils.showToast(avatarToast, '请先登录后操作');
+                return;
+            }
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                utils.showToast(avatarToast, '仅支持JPG、PNG、WebP格式');
+                return;
+            }
+            if (file.size > CONFIG.AVATAR_CONFIG.MAX_SIZE) {
+                utils.showToast(avatarToast, '图片大小不能超过5MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxDim = CONFIG.AVATAR_CONFIG.MAX_DIMENSION;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > maxDim || height > maxDim) {
+                        const ratio = Math.min(maxDim / width, maxDim / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, width, height);
+                    const radius = Math.min(width, height) / 2;
+                    ctx.beginPath();
+                    ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    canvas.toBlob(function(blob) {
+                        const resultReader = new FileReader();
+                        resultReader.onload = function(resultE) {
+                            const avatarUrl = resultE.target.result;
+                            if (!userProfiles[currentUser.username]) userProfiles[currentUser.username] = {};
+                            userProfiles[currentUser.username].avatarUrl = avatarUrl;
+                            utils.saveToStorage(CONFIG.STORAGE_KEYS.USER_PROFILES, userProfiles);
+                            avatarImage.src = avatarUrl;
+                            avatarImage.style.display = 'block';
+                            avatarInitial.style.display = 'none';
+                            utils.showToast(avatarToast, '头像上传成功');
+                        };
+                        resultReader.readAsDataURL(blob);
+                    }, 'image/webp', CONFIG.AVATAR_CONFIG.COMPRESS_QUALITY);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        resetAvatarBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                utils.showToast(avatarToast, '请先登录后操作');
+                return;
+            }
+            if (userProfiles[currentUser.username]) {
+                delete userProfiles[currentUser.username].avatarUrl;
+                utils.saveToStorage(CONFIG.STORAGE_KEYS.USER_PROFILES, userProfiles);
+            }
+            avatarImage.style.display = 'none';
+            avatarInitial.style.display = 'block';
+            avatarInitial.textContent = utils.getUsernameInitial(currentUser.username);
+            utils.showToast(avatarToast, '头像已重置');
+        });
+
+        avatarFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageUpload(file);
+                avatarFileInput.value = '';
+            }
+        });
+
+        avatarFrame.addEventListener('click', () => avatarFileInput.click());
+
+        // 账户设置
+        saveUsernameBtn.addEventListener('click', () => {
+            if (!currentUser) return;
+            const newUsername = newUsernameEl.value.trim();
+            const verifyPwd = verifyPwdForNameEl.value.trim();
+            if (!newUsername || !verifyPwd) { alert('请填写完整信息！'); return; }
+            if (verifyPwd !== currentUser.password) { alert('密码验证错误！'); return; }
+            if (users.some(u => u.username === newUsername)) { alert('该账号名称已被占用！'); return; }
+            
+            if (userProfiles[currentUser.username]) {
+                userProfiles[newUsername] = userProfiles[currentUser.username];
+                delete userProfiles[currentUser.username];
+                utils.saveToStorage(CONFIG.STORAGE_KEYS.USER_PROFILES, userProfiles);
+            }
+            
+            currentUser.username = newUsername;
+            currentUsernameEl.value = newUsername;
+            newUsernameEl.value = '';
+            verifyPwdForNameEl.value = '';
+            avatarInitial.textContent = utils.getUsernameInitial(newUsername);
+            usernameSuccessHint.style.display = 'block';
+            setTimeout(() => usernameSuccessHint.style.display = 'none', 3000);
+            utils.saveToStorage(CONFIG.STORAGE_KEYS.USERS, users);
+        });
+
+        savePasswordBtn.addEventListener('click', () => {
+            if (!currentUser) return;
+            const oldPassword = oldPasswordInput.value.trim();
+            const newPassword = newPasswordInput.value.trim();
+            const confirmNewPassword = confirmNewPasswordInput.value.trim();
+            if (!oldPassword || !newPassword || !confirmNewPassword) { alert('请填写完整密码信息！'); return; }
+            if (oldPassword !== currentUser.password) { alert('原密码错误！'); return; }
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,20}$/;
+            if (!passwordRegex.test(newPassword)) { alert('新密码格式错误！需6-20位，包含字母和数字'); return; }
+            if (newPassword !== confirmNewPassword) { alert('两次输入的新密码不一致！'); return; }
+            if (newPassword === oldPassword) { alert('新密码不能与原密码相同！'); return; }
+            
+            currentUser.password = newPassword;
+            passwordSuccessHint.style.display = 'block';
+            oldPasswordInput.value = '';
+            newPasswordInput.value = '';
+            confirmNewPasswordInput.value = '';
+            setTimeout(() => passwordSuccessHint.style.display = 'none', 3000);
+            utils.saveToStorage(CONFIG.STORAGE_KEYS.USERS, users);
+        });
+
+        // 注册登录逻辑
+        regSubmit.addEventListener('click', () => {
+            const username = regUsername.value.trim();
+            const password = regPassword.value.trim();
+            const activationCode = verifyCode.value.trim();
+            if (!username || !password || !activationCode) { alert('请填写完整信息！'); return; }
+            if (activationCode !== CONFIG.USER_ACTIVATION_CODE) { alert('用户激活码错误！'); return; }
+            if (users.some(u => u.username === username)) { alert('该账号已存在！'); return; }
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,20}$/;
+            if (!passwordRegex.test(password)) { alert('密码格式错误！需6-20位，包含字母和数字'); return; }
+            const now = new Date().getTime();
+            const lastRegisterTime = userRegisterTimes[username] || 0;
+            if (now - lastRegisterTime < CONFIG.REGISTER_INTERVAL) {
+                const remaining = Math.ceil((CONFIG.REGISTER_INTERVAL - (now - lastRegisterTime)) / 60000);
+                alert(`每小时仅可注册1个账号，剩余${remaining}分钟后可注册`);
+                return;
+            }
+            
+            const newUser = { username, password, registerTime: now, lastLoginTime: now, activatedCards: [] };
+            users.push(newUser);
+            userRegisterTimes[username] = now;
+            utils.saveToStorage(CONFIG.STORAGE_KEYS.USERS, users);
+            utils.saveToStorage(CONFIG.STORAGE_KEYS.USER_REGISTER_TIMES, userRegisterTimes);
+            
+            alert('注册成功，即将自动登录！');
+            loginUsername.value = username;
+            loginPassword.value = password;
+            utils.switchPage(registerPage, loginPage);
+            
+            setTimeout(() => {
+                currentUser = newUser;
+                utils.switchPage(loginPage, userBackend);
+                updateDashboard(newUser);
+                regUsername.value = '';
+                regPassword.value = '';
+                verifyCode.value = '';
+            }, 800);
+        });
+
+        loginSubmit.addEventListener('click', () => {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+            if (!username || !password) { alert('请填写账号密码！'); return; }
+            const user = users.find(u => u.username === username && u.password === password);
+            if (!user) { alert('账号或密码错误！'); return; }
+            
+            currentUser = user;
+            utils.switchPage(loginPage, userBackend);
+            updateDashboard(user);
+            currentUsernameEl.value = user.username;
+            loginUsername.value = '';
+            loginPassword.value = '';
+
+            if (isFirstLogin) {
+                utils.showToast(avatarToast, '欢迎进入用户中心！');
+                isFirstLogin = false;
+            }
+        });
+
+        // 页面导航逻辑
+        userCenterCard.addEventListener('click', () => {
+            pageContainer.style.display = 'block';
+            utils.switchPage(loginPage, loginPage);
+        });
+
+        buyCard.addEventListener('click', () => {
+            window.open('https://lv.youxi186.com/shop/Carpauxiliary', '_blank');
+        });
+
+        // 会员中心点击提示（核心修改）
+        vipCenterCard.addEventListener('click', () => {
+            utils.showToast(avatarToast, '暂时无法使用该功能');
+        });
+
+        loginBackBtn.addEventListener('click', () => utils.switchPage(loginPage, null, true));
+        regBackBtn.addEventListener('click', () => utils.switchPage(registerPage, null, true));
+        backToMainBtn.addEventListener('click', () => utils.switchPage(userBackend, null, true));
+
+        toRegLink.addEventListener('click', () => utils.switchPage(loginPage, registerPage));
+        toLoginLink.addEventListener('click', () => utils.switchPage(registerPage, loginPage));
+
+        logoutBtn.addEventListener('click', () => {
+            utils.switchPage(userBackend, loginPage);
+            setTimeout(() => {
+                pageContainer.style.display = 'none';
+                currentUser = null;
+                isFirstLogin = true;
+            }, 800);
+        });
+
+        // 菜单切换
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menuItems.forEach(i => i.classList.remove('active'));
+                mainSections.forEach(section => section.style.display = 'none');
+                item.classList.add('active');
+                const target = item.getAttribute('data-target');
+                document.getElementById(target).style.display = 'block';
+                if ((target === 'dashboard' || target === 'cards') && currentUser) refreshCardData(currentUser);
+                if (target === 'settings' && currentUser) currentUsernameEl.value = currentUser.username;
+            });
+        });
+    </script>
+</body>
+</html>
